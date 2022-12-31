@@ -33,49 +33,48 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// create new product
-router.post('/', async (req, res) => {
-  try {
-    const productData = await Product.create(req.body)
-    res.status(200).json(productData);
-  } catch (err) {
-    res.status(400).json(err);
-  }
-  Product.create(req.body)  
-  .then((product) => {
-    // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-    if (req.body.tagIds.length) {
-      const productTagIdArr = req.body.tagIds.map((tag_id) => {
-        return {
-          product_id: product.id,
-          tag_id,
-        };
-      });
-      return ProductTag.bulkCreate(productTagIdArr);
+
+router.post('/', (req, res) => {
+  /* req.body should look like this...
+    {
+      product_name: "Basketball",
+      price: 200.00,
+      stock: 3,
+      tagIds: [1, 2, 3, 4]
     }
-    // if no product tags, just respond
-    res.status(200).json(product);
-  })
+  */
+  Product.create(req.body)
+    .then((product) => {
+      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
+      if (req.body.tagIds.length) {
+        const productTagIdArr = req.body.tagIds.map((tag_id) => {
+          return {
+            product_id: product.id,
+            tag_id,
+          };
+        });
+        return ProductTag.bulkCreate(productTagIdArr);
+      }
+      // if no product tags, just respond
+      res.status(200).json(product);
+    })
     .then((productTagIds) => res.status(200).json(productTagIds))
     .catch((err) => {
       console.log(err);
       res.status(400).json(err);
     });
 });
-/* req.body should look like this...
-  {
-    product_name: "Basketball",
-    price: 200.00,
-    stock: 3,
-    tagIds: [1, 2, 3, 4]
-  }
-*/
 
 
 // update product
 router.put('/:id', (req, res) => {
-  // update product data
-  Product.update(req.body, {
+  // DONE: update product data
+  Product.update({
+      product_name: req.body.product_name,
+      price: req.body.price,
+      stock: req.body.stock,
+      category_id: req.body.category_id,
+  }, {
     where: {
       id: req.params.id,
     },
@@ -109,7 +108,7 @@ router.put('/:id', (req, res) => {
     })
     .then((updatedProductTags) => res.json(updatedProductTags))
     .catch((err) => {
-      // console.log(err);
+      console.log(err);
       res.status(400).json(err);
     });
 });

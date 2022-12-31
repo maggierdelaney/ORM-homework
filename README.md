@@ -2,8 +2,8 @@
 
 ## Description
 
-Link to video demonstration:
-Link to Github Repo:
+Link to video demonstration: https://watch.screencastify.com/v/qh22HXhwFRzSFs4lYQg0
+Link to Github Repo: https://github.com/maggierdelaney/ORM-homework
 
 The following Object-Relational Mapping (ORM) homework adheres to the following acceptance criteria:
 
